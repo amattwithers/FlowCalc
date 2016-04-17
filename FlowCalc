@@ -1,0 +1,56 @@
+#!/usr/bin/env python3
+
+###################################################
+# Python Code to Calculate Flow stuff
+#
+#
+#
+#
+###################################################
+
+import numpy as np
+import matplotlib.pyplot as plt
+
+
+def calc_load(area, flow, bfi, svol, rfc, bfc, sfc, rca):
+
+    # Check input is correct
+    if (bfi > 1.0):
+        print("Error")
+        return False
+
+    # Calculate flows
+    bflow = bfi * flow  # Base flow
+    rflow = (1.0 - bfi) * flow  # Runoff flow
+
+    bvol = area * bflow * 1.0e4  # Base Flow Volume
+    rvol = (rca/100) * area * rflow * 1.0e4  # Runoff Flow Volume
+
+    bload = bvol * bfc * 1.0e-6  # Base Load/kg
+    sload = svol * sfc * 1.0e-6  # Source Load/kg
+    rload = rvol * rfc * 1.0e-6  # Runoff Load/kg
+
+    tot_load = bload + sload + rload
+    tot_flow = bvol + rvol + svol
+    new_conc = (tot_load * 1.0e6) / tot_flow
+
+    return new_conc
+
+
+if __name__ == '__main__':
+
+    print("Running")
+
+    # Define some constants
+    area = 28700  # Catchment area/ha
+    flow = 367  # Total flow in mm
+    bfi = 0.4  # Base Flow Index
+    svol = 100000  # Source Volume/L
+    rfc = 0.329  # Runoff flow conc mg L^-1
+    bfc = 0.1  # Base flow conc mg L^-1
+    sfc = 0.1  # Source flow conc mg L^-1
+    rca = 50  # Percentage of catchment contributing to runoff
+
+    conc = calc_load(area, flow, bfi, svol, rfc, bfc, sfc, rca)
+
+    print("New Conc = %1.4f mg/L" % conc)
