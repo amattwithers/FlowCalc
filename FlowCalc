@@ -37,6 +37,39 @@ def calc_load(area, flow, bfi, svol, rfc, bfc, sfc, rca):
     return new_conc
 
 
+def sampler():
+    '''Function to sample to parameter space'''
+
+    # Sampling flow, bfi, svol, rfc, bfc, sfc
+
+    data = np.zeros((1000000, 7))
+    i = 0
+    for flow in range(0, 10, 1):
+        # print(flow*50)
+        for bfi in range(0, 10, 1):
+            # print(bfi/10)
+            for svol in range(0, 10, 1):
+                # print(svol*100000)
+                for rfc in range(0, 10, 1):
+                    # print(rfc/10)
+                    for bfc in range(0, 10, 1):
+                        # print(bfc/10)
+                        for sfc in range(0, 10, 1):
+                            # print(sfc/10)
+                            conc = calc_load(20000.0, (1+flow)*50.0, bfi/10.0, svol*100000.0, rfc/10.0, bfc/10.0, sfc/10.0, 50.0)
+                            data[i][0] = (1+flow)*50.0
+                            data[i][1] = bfi/10.0
+                            data[i][2] = svol*100000.0
+                            data[i][3] = rfc/10.0
+                            data[i][4] = bfc/10.0
+                            data[i][5] = sfc/10.0
+                            data[i][6] = conc
+                            # print(i)
+                            i += 1
+
+    return data
+
+
 if __name__ == '__main__':
 
     print("Running")
@@ -54,3 +87,21 @@ if __name__ == '__main__':
     conc = calc_load(area, flow, bfi, svol, rfc, bfc, sfc, rca)
 
     print("New Conc = %1.4f mg/L" % conc)
+
+    # Testing
+
+    data = np.zeros((10,10))
+    flow_dat = np.zeros(10)
+    bfi_dat = np.zeros(10)
+
+    for flow in range(0, 10, 1):
+        # print(flow*50)
+        for bfi in range(0, 10, 1):
+            # print(bfi/10)
+            data[flow, bfi] = calc_load(20000.0, (1+flow)*50.0, bfi/10.0, 300000.0, 0.3, 0.1, 0.15, 50.0)
+            flow_dat[flow] = (1+flow)*50.0
+            bfi_dat[bfi] = bfi/10.0
+
+    plt.figure()
+    plt.contour(flow_dat, bfi_dat, data)
+    plt.show()
